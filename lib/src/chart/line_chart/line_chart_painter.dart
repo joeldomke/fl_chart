@@ -1544,8 +1544,13 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
     double? smallestDistance;
     for (var spot in barData.spots) {
       if (spot.isNull()) continue;
-      final distance =
+      var distance =
           (touchedPoint.dx - getPixelX(spot.x, chartViewSize, holder)).abs();
+      if (data.lineTouchData.includeYDistance) {
+        final distanceY =
+            (touchedPoint.dy - getPixelY(spot.y, chartViewSize, holder)).abs();
+        distance = sqrt(distance * distance + distanceY * distanceY);
+      }
 
       if (distance <= data.lineTouchData.touchSpotThreshold) {
         smallestDistance ??= distance;

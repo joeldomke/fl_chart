@@ -1397,6 +1397,9 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
   /// Distance threshold to handle the touch event.
   final double touchSpotThreshold;
 
+  /// Determines wether the y distance should be included when checking against [touchSpotThreshold]
+  final bool includeYDistance;
+
   /// Determines to handle default built-in touch responses,
   /// [LineTouchResponse] shows a tooltip popup above the touched spot.
   final bool handleBuiltInTouches;
@@ -1433,6 +1436,7 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
     LineTouchTooltipData? touchTooltipData,
     GetTouchedSpotIndicator? getTouchedSpotIndicator,
     double? touchSpotThreshold,
+    bool? includeYDistance,
     bool? handleBuiltInTouches,
     GetTouchLineY? getTouchLineStart,
     GetTouchLineY? getTouchLineEnd,
@@ -1440,6 +1444,7 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
         getTouchedSpotIndicator =
             getTouchedSpotIndicator ?? defaultTouchedIndicators,
         touchSpotThreshold = touchSpotThreshold ?? 10,
+        includeYDistance = includeYDistance ?? false,
         handleBuiltInTouches = handleBuiltInTouches ?? true,
         getTouchLineStart = getTouchLineStart ?? defaultGetTouchLineStart,
         getTouchLineEnd = getTouchLineEnd ?? defaultGetTouchLineEnd,
@@ -1454,6 +1459,7 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
     LineTouchTooltipData? touchTooltipData,
     GetTouchedSpotIndicator? getTouchedSpotIndicator,
     double? touchSpotThreshold,
+    bool? includeYDistance,
     GetTouchLineY? getTouchLineStart,
     GetTouchLineY? getTouchLineEnd,
     bool? handleBuiltInTouches,
@@ -1466,6 +1472,7 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
       getTouchedSpotIndicator:
           getTouchedSpotIndicator ?? this.getTouchedSpotIndicator,
       touchSpotThreshold: touchSpotThreshold ?? this.touchSpotThreshold,
+      includeYDistance: includeYDistance ?? this.includeYDistance,
       getTouchLineStart: getTouchLineStart ?? this.getTouchLineStart,
       getTouchLineEnd: getTouchLineEnd ?? this.getTouchLineEnd,
       handleBuiltInTouches: handleBuiltInTouches ?? this.handleBuiltInTouches,
@@ -1481,6 +1488,7 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
         touchTooltipData,
         getTouchedSpotIndicator,
         touchSpotThreshold,
+        includeYDistance,
         handleBuiltInTouches,
         getTouchLineStart,
         getTouchLineEnd,
