@@ -1527,11 +1527,12 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
   /// find the nearest spot base on the touched offset
   @visibleForTesting
   LineBarSpot? getNearestTouchedSpot(
-      Size viewSize,
-      Offset touchedPoint,
-      LineChartBarData barData,
-      int barDataPosition,
-      PaintHolder<LineChartData> holder) {
+    Size viewSize,
+    Offset touchedPoint,
+    LineChartBarData barData,
+    int barDataPosition,
+    PaintHolder<LineChartData> holder,
+  ) {
     final data = holder.data;
     if (!barData.show) {
       return null;
@@ -1544,13 +1545,12 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
     double? smallestDistance;
     for (var spot in barData.spots) {
       if (spot.isNull()) continue;
-      var distance =
-          (touchedPoint.dx - getPixelX(spot.x, chartViewSize, holder)).abs();
-      if (data.lineTouchData.includeYDistance) {
-        final distanceY =
-            (touchedPoint.dy - getPixelY(spot.y, chartViewSize, holder)).abs();
-        distance = sqrt(distance * distance + distanceY * distanceY);
-      }
+      final distance = data.lineTouchData.distanceCalculator(
+          touchedPoint,
+          Offset(
+            getPixelX(spot.x, chartViewSize, holder),
+            getPixelY(spot.y, chartViewSize, holder),
+          ));
 
       if (distance <= data.lineTouchData.touchSpotThreshold) {
         smallestDistance ??= distance;
@@ -1565,7 +1565,8 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
     }
 
     if (sortedSpots.isNotEmpty) {
-      return LineBarSpot(barData, barDataPosition, sortedSpots.first);
+      return LineBarSpot(barData, barDataPosition, sortedSpots.first,
+          distance: smallestDistance!);
     } else {
       return null;
     }

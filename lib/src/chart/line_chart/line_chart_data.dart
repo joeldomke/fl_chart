@@ -1397,8 +1397,8 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
   /// Distance threshold to handle the touch event.
   final double touchSpotThreshold;
 
-  /// Determines wether the y distance should be included when checking against [touchSpotThreshold]
-  final bool includeYDistance;
+  /// Distance function used when finding closest points to touch point
+  final CalculateTouchDistance distanceCalculator;
 
   /// Determines to handle default built-in touch responses,
   /// [LineTouchResponse] shows a tooltip popup above the touched spot.
@@ -1436,7 +1436,7 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
     LineTouchTooltipData? touchTooltipData,
     GetTouchedSpotIndicator? getTouchedSpotIndicator,
     double? touchSpotThreshold,
-    bool? includeYDistance,
+    CalculateTouchDistance? distanceCalculator,
     bool? handleBuiltInTouches,
     GetTouchLineY? getTouchLineStart,
     GetTouchLineY? getTouchLineEnd,
@@ -1444,7 +1444,7 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
         getTouchedSpotIndicator =
             getTouchedSpotIndicator ?? defaultTouchedIndicators,
         touchSpotThreshold = touchSpotThreshold ?? 10,
-        includeYDistance = includeYDistance ?? false,
+        distanceCalculator = distanceCalculator ?? xDistance,
         handleBuiltInTouches = handleBuiltInTouches ?? true,
         getTouchLineStart = getTouchLineStart ?? defaultGetTouchLineStart,
         getTouchLineEnd = getTouchLineEnd ?? defaultGetTouchLineEnd,
@@ -1459,7 +1459,7 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
     LineTouchTooltipData? touchTooltipData,
     GetTouchedSpotIndicator? getTouchedSpotIndicator,
     double? touchSpotThreshold,
-    bool? includeYDistance,
+    CalculateTouchDistance? distanceCalculator,
     GetTouchLineY? getTouchLineStart,
     GetTouchLineY? getTouchLineEnd,
     bool? handleBuiltInTouches,
@@ -1472,7 +1472,6 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
       getTouchedSpotIndicator:
           getTouchedSpotIndicator ?? this.getTouchedSpotIndicator,
       touchSpotThreshold: touchSpotThreshold ?? this.touchSpotThreshold,
-      includeYDistance: includeYDistance ?? this.includeYDistance,
       getTouchLineStart: getTouchLineStart ?? this.getTouchLineStart,
       getTouchLineEnd: getTouchLineEnd ?? this.getTouchLineEnd,
       handleBuiltInTouches: handleBuiltInTouches ?? this.handleBuiltInTouches,
@@ -1488,7 +1487,7 @@ class LineTouchData extends FlTouchData<LineTouchResponse> with EquatableMixin {
         touchTooltipData,
         getTouchedSpotIndicator,
         touchSpotThreshold,
-        includeYDistance,
+        distanceCalculator,
         handleBuiltInTouches,
         getTouchLineStart,
         getTouchLineEnd,
@@ -1507,6 +1506,15 @@ typedef GetTouchedSpotIndicator = List<TouchedSpotIndicatorData?> Function(
 /// Used for determine the touch indicator line's starting/end point.
 typedef GetTouchLineY = double Function(
     LineChartBarData barData, int spotIndex);
+
+/// Used to calculate the distance between coordinates of a touch event and a spot
+typedef CalculateTouchDistance = double Function(
+    Offset touchPoint, Offset spotPixelCoordinates);
+
+/// Default distanceCalculator only considers distance on x axis
+double xDistance(Offset touchPoint, Offset spotPixelCoordinates) {
+  return ((touchPoint.dx - spotPixelCoordinates.dx)).abs();
+}
 
 /// Default presentation of touched indicators.
 List<TouchedSpotIndicatorData> defaultTouchedIndicators(
@@ -1661,6 +1669,9 @@ class LineBarSpot extends FlSpot with EquatableMixin {
   /// Is the index of our [super.spot], in the [LineChartBarData.spots] list.
   final int spotIndex;
 
+  /// Distance in pixels from where the user taped
+  final double? distance;
+
   /// [bar] is the [LineChartBarData] that this spot is inside of,
   /// [barIndex] is the index of our [bar], in the [LineChartData.lineBarsData] list,
   /// [spot] is the targeted spot.
@@ -1668,8 +1679,9 @@ class LineBarSpot extends FlSpot with EquatableMixin {
   LineBarSpot(
     this.bar,
     this.barIndex,
-    FlSpot spot,
-  )   : spotIndex = bar.spots.indexOf(spot),
+    FlSpot spot, {
+    this.distance,
+  })  : spotIndex = bar.spots.indexOf(spot),
         super(spot.x, spot.y);
 
   /// Used for equality check, see [EquatableMixin].
@@ -1677,6 +1689,7 @@ class LineBarSpot extends FlSpot with EquatableMixin {
   List<Object?> get props => [
         bar,
         barIndex,
+        distance,
         spotIndex,
         x,
         y,
