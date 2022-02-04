@@ -286,7 +286,7 @@ class MockData {
   );
 
   static final lineTouchResponse1 =
-      LineTouchResponse([lineBarSpot1, lineBarSpot2]);
+      LineTouchResponse([lineBarSpot1, lineBarSpot2], lineBarSpot1);
 
   static final barChartRodData1 = BarChartRodData(y: 11);
   static final barChartRodData2 = BarChartRodData(y: 22);
@@ -1110,12 +1110,14 @@ final LineTouchResponse lineTouchResponse1 = LineTouchResponse(
     lineBarSpot1,
     lineBarSpot2,
   ],
+  lineBarSpot1,
 );
 final LineTouchResponse lineTouchResponse1Clone = LineTouchResponse(
   [
     lineBarSpot1Clone,
     lineBarSpot2,
   ],
+  lineBarSpot1Clone,
 );
 
 final LineTouchResponse lineTouchResponse2 = LineTouchResponse(
@@ -1123,10 +1125,12 @@ final LineTouchResponse lineTouchResponse2 = LineTouchResponse(
     lineBarSpot2,
     lineBarSpot1,
   ],
+  lineBarSpot2,
 );
 
 final LineTouchResponse lineTouchResponse3 = LineTouchResponse(
   [],
+  null,
 );
 
 final LineTouchResponse lineTouchResponse4 = LineTouchResponse(
@@ -1134,6 +1138,7 @@ final LineTouchResponse lineTouchResponse4 = LineTouchResponse(
     lineBarSpot1,
     lineBarSpot2,
   ],
+  lineBarSpot1,
 );
 
 final LineTouchResponse lineTouchResponse5 = LineTouchResponse(
@@ -1141,6 +1146,7 @@ final LineTouchResponse lineTouchResponse5 = LineTouchResponse(
     lineBarSpot1,
     lineBarSpot2,
   ],
+  lineBarSpot1,
 );
 
 final TouchedSpotIndicatorData touchedSpotIndicatorData1 =

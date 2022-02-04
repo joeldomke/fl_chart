@@ -1669,9 +1669,6 @@ class LineBarSpot extends FlSpot with EquatableMixin {
   /// Is the index of our [super.spot], in the [LineChartBarData.spots] list.
   final int spotIndex;
 
-  /// Distance in pixels from where the user taped
-  final double? distance;
-
   /// [bar] is the [LineChartBarData] that this spot is inside of,
   /// [barIndex] is the index of our [bar], in the [LineChartData.lineBarsData] list,
   /// [spot] is the targeted spot.
@@ -1679,9 +1676,8 @@ class LineBarSpot extends FlSpot with EquatableMixin {
   LineBarSpot(
     this.bar,
     this.barIndex,
-    FlSpot spot, {
-    this.distance,
-  })  : spotIndex = bar.spots.indexOf(spot),
+    FlSpot spot,
+  )   : spotIndex = bar.spots.indexOf(spot),
         super(spot.x, spot.y);
 
   /// Used for equality check, see [EquatableMixin].
@@ -1689,11 +1685,23 @@ class LineBarSpot extends FlSpot with EquatableMixin {
   List<Object?> get props => [
         bar,
         barIndex,
-        distance,
         spotIndex,
         x,
         y,
       ];
+}
+
+/// A [LineBarSpot] that holds information about the event that selected it
+class TouchLineBarSpot extends LineBarSpot {
+  /// Distance in pixels from where the user taped
+  final double distance;
+
+  TouchLineBarSpot(
+    LineChartBarData bar,
+    int barIndex,
+    FlSpot spot,
+    this.distance,
+  ) : super(bar, barIndex, spot);
 }
 
 /// Holds data of showing each row item in the tooltip popup.
@@ -1783,17 +1791,22 @@ class LineTouchResponse extends BaseTouchResponse {
   /// (if a single line provided on the chart, [lineBarSpots]'s length will be 1 always)
   final List<LineBarSpot>? lineBarSpots;
 
+  /// this was the closest spot to the touch
+  final LineBarSpot? closestLineBarSpot;
+
   /// If touch happens, [LineChart] processes it internally and
   /// passes out a list of [lineBarSpots] it gives you information about the touched spot.
-  LineTouchResponse(this.lineBarSpots) : super();
+  LineTouchResponse(this.lineBarSpots, this.closestLineBarSpot) : super();
 
   /// Copies current [LineTouchResponse] to a new [LineTouchResponse],
   /// and replaces provided values.
   LineTouchResponse copyWith({
     List<LineBarSpot>? lineBarSpots,
+    LineBarSpot? closestLineBarSpot,
   }) {
     return LineTouchResponse(
       lineBarSpots ?? this.lineBarSpots,
+      closestLineBarSpot ?? this.closestLineBarSpot,
     );
   }
 }

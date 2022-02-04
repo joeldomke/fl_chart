@@ -740,7 +740,7 @@ class MockLineChartPainter extends _i1.Mock implements _i9.LineChartPainter {
               Invocation.method(#handleTouch, [localPosition, size, holder]))
           as List<_i7.LineBarSpot>?);
   @override
-  _i7.LineBarSpot? getNearestTouchedSpot(
+  _i7.TouchLineBarSpot? getNearestTouchedSpot(
           _i2.Size? viewSize,
           _i2.Offset? touchedPoint,
           _i7.LineChartBarData? barData,
@@ -752,7 +752,7 @@ class MockLineChartPainter extends _i1.Mock implements _i9.LineChartPainter {
         barData,
         barDataPosition,
         holder
-      ])) as _i7.LineBarSpot?);
+      ])) as _i7.TouchLineBarSpot?);
   @override
   void drawAxisTitles(
           _i3.BuildContext? context,

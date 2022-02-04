@@ -1507,7 +1507,7 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
 
     /// it holds list of nearest touched spots of each line
     /// and we use it to draw touch stuff on them
-    final touchedSpots = <LineBarSpot>[];
+    final touchedSpots = <TouchLineBarSpot>[];
 
     /// draw each line independently on the chart
     for (var i = 0; i < data.lineBarsData.length; i++) {
@@ -1521,12 +1521,14 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
       }
     }
 
+    touchedSpots.sort((a, b) => a.distance.compareTo(b.distance));
+
     return touchedSpots.isEmpty ? null : touchedSpots;
   }
 
   /// find the nearest spot base on the touched offset
   @visibleForTesting
-  LineBarSpot? getNearestTouchedSpot(
+  TouchLineBarSpot? getNearestTouchedSpot(
     Size viewSize,
     Offset touchedPoint,
     LineChartBarData barData,
@@ -1565,8 +1567,8 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
     }
 
     if (sortedSpots.isNotEmpty) {
-      return LineBarSpot(barData, barDataPosition, sortedSpots.first,
-          distance: smallestDistance!);
+      return TouchLineBarSpot(
+          barData, barDataPosition, sortedSpots.first, smallestDistance!);
     } else {
       return null;
     }
